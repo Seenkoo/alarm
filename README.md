@@ -1,3 +1,3 @@
 # OSX alarm script
-usage: alarm &lt;hh:mm&gt; &lt;alarm_file&gt;
+usage: sh ./alarm.sh &lt;hh:mm&gt; &lt;alarm_file&gt;
 
