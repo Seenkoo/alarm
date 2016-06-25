@@ -14,8 +14,8 @@ while [ $(date +"%H:%M") != "$ALARM_TIME" ]; do sleep 1; done
 # Set sound output device to built-in
 SwitchAudioSource -t output -s "Built-in Output" > /dev/null
 
-# Set system volume to 50%
-osascript -e "set Volume 1.5"
+# Set system volume to ~50%
+osascript -e "set Volume 3.5"
 
 # Stop playing and exit when notification is dismissed
 trap "rm $PID_FILE; kill \$(jobs -p)" EXIT
