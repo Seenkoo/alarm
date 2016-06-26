@@ -3,9 +3,27 @@
 
 ALARM_TIME="$1"
 ALARM_FILE="$2"
-PID=$$
-PID_FILE="/usr/local/var/run/alarm_${ALARM_TIME}.pid"
-echo $PID > "$PID_FILE"
+
+function write_pid() {
+  # PID Directory
+  PID_DIR="/usr/local/var/run/alarm"
+  mkdir -p -- "$PID_DIR" &>/dev/null
+  if [ ! -d "$PID_DIR" ] || [ ! -w "$PID_DIR" ] || [ -L "$PID_DIR" ]; then
+    (>&2 echo "Can't use directory ${PID_DIR}.")
+    exit 126
+  fi
+
+  # PID File
+  PID=$$
+  PID_FILE="${PID_DIR}/${ALARM_TIME}.pid"
+  if [ -f "$PID_FILE" ]; then
+    (>&2 echo "LOCK: PID file ${PID_FILE} already exists.")
+    exit 126
+  fi
+  echo "$PID" > "$PID_FILE"
+}
+
+write_pid
 
 # Stop playing and exit when notification is dismissed or script is stopped
 trap "rm $PID_FILE; kill \$(jobs -p)" EXIT
