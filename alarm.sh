@@ -2,7 +2,7 @@
 # usage: alarm <hh:mm> <alarm_file>
 
 ALARM_TIME="$1"
-ALARM_FILE="$2"
+ALARM_FILE=$(realpath -- "$2")
 
 function write_pid() {
   # PID Directory
@@ -26,7 +26,7 @@ function write_pid() {
 write_pid
 
 # Stop playing and exit when notification is dismissed or script is stopped
-trap "rm $PID_FILE; kill \$(jobs -p)" EXIT
+trap "rm -- ${PID_FILE}; kill \$(jobs -p)" EXIT
 
 caffeinate -i -s -w $PID &
 
