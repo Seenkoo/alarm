@@ -1,7 +1,15 @@
 #!/bin/bash
 # usage: alarm <hh:mm> <alarm_file>
 
-ALARM_TIME="$1"
+function set_alarm_time() {
+  case "$1" in
+  [01][0-9]:[0-5][0-9]|2[0-3]:[0-5][0-9]) echo "$1";;
+  (*) (>&2 echo "Invalid time format. Correct format is <hh:mm>.")
+    exit 1;;
+  esac
+}
+ALARM_TIME=$(set_alarm_time "$1")
+
 ALARM_FILE=$(realpath -- "$2")
 
 function write_pid() {
