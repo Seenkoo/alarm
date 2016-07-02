@@ -8,7 +8,6 @@ function set_alarm_time() {
     exit 1;;
   esac
 }
-
 set_alarm_time "$1"
 
 ALARM_FILE=$(realpath -- "$2")
@@ -31,13 +30,10 @@ function write_pid() {
   fi
   echo "$PID" > "$PID_FILE"
 }
-
 write_pid
 
-# Stop playing and exit when notification is dismissed or script is stopped
+pmset noidle &
 trap "rm -- ${PID_FILE}; kill \$(jobs -p)" EXIT
-
-caffeinate -i -s -w $PID &
 
 # Wait for alarm time
 while [ $(date +"%H:%M") != "$ALARM_TIME" ]; do sleep 1; done
@@ -49,7 +45,7 @@ SwitchAudioSource -t output -s "Built-in Output" > /dev/null
 osascript -e "set Volume 3.5"
 
 # Wake up
-caffeinate -u -d -w $PID &
+caffeinate -u -w $PID &
 
 # Box notification
 osascript -e "with timeout 601 seconds" \
